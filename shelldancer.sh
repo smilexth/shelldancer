@@ -23,12 +23,12 @@ fi
 
 # Function to display menu
 display_menu() {
-    echo -e "${BLUE}============================${NC}"
+    echo -e "${BLUE}==================================================${NC}"
     echo -e "${YELLOW}       Shell Dancer${NC}"
     echo -e "${YELLOW}   AutoSSH Interactive Tool${NC}"
     echo -e "${YELLOW}       (c) SmileX${NC}"
     echo -e "${YELLOW}GitHub: https://github.com/smilexth/shelldancer${NC}"
-    echo -e "${BLUE}============================${NC}"
+    echo -e "${BLUE}==================================================${NC}"
     echo -e "1. Create Port Tunnel"
     echo -e "2. Create Reverse Shell"
     echo -e "3. Exit"
