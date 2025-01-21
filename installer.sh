@@ -7,7 +7,7 @@
 # ==========================================================
 
 SCRIPT_NAME="shelldancer"
-REPO_URL="https://raw.githubusercontent.com/smilexth/shelldancer/main/shelldancer.sh"
+REPO_URL="https://raw.githubusercontent.com/smilexth/shelldancer/main/shelldancer"
 
 # Function to check if shelldancer is already installed
 check_existing() {
