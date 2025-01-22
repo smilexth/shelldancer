@@ -34,6 +34,8 @@ version_gt() {
     return 1
 }
 
+
+
 # Function to check if shelldancer is already installed
 check_existing() {
     if command -v "$SCRIPT_NAME" &> /dev/null; then
@@ -80,9 +82,10 @@ check_existing() {
 
 # Function to download and install Shell Dancer
 install_shelldancer() {
-    # Find a writable directory in $PATH
+    # Determine the system's bin directory
+    BIN_DIRS=("/usr/local/bin" "/usr/bin" "/bin" "/sbin" "/usr/sbin")
     INSTALL_DIR=""
-    for dir in $(echo "$PATH" | tr ':' '\n'); do
+    for dir in "${BIN_DIRS[@]}"; do
         if [ -w "$dir" ]; then
             INSTALL_DIR="$dir"
             break
@@ -90,9 +93,11 @@ install_shelldancer() {
     done
 
     if [ -z "$INSTALL_DIR" ]; then
-        echo "❌ No writable directory found in \$PATH. Please run this script as root."
+        echo "❌ No writable bin directory found. Please run this script with appropriate permissions."
         exit 1
     fi
+
+    echo "Installing Shell Dancer to $INSTALL_DIR"
 
     echo -e "Downloading Shell Dancer..."
 
