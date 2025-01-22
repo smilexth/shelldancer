@@ -112,5 +112,5 @@ check_existing
 if [ $? -eq 1 ]; then
     install_shelldancer
 else
-    echo "Installation complete."
+   # echo "Installation complete."
 fi
