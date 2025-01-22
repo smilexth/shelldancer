@@ -82,18 +82,18 @@ check_existing() {
 
 # Function to download and install Shell Dancer
 install_shelldancer() {
-    # Determine the system's bin directory
-    BIN_DIRS=("/usr/local/bin" "/usr/bin" "/bin" "/sbin" "/usr/sbin")
+    # Determine the system's bin directory from $PATH
+    IFS=':' read -ra PATH_DIRS <<< "$PATH"
     INSTALL_DIR=""
-    for dir in "${BIN_DIRS[@]}"; do
-        if [ -w "$dir" ]; then
+    for dir in "${PATH_DIRS[@]}"; do
+        if [ -d "$dir" ] && [ -w "$dir" ]; then
             INSTALL_DIR="$dir"
             break
         fi
     done
 
     if [ -z "$INSTALL_DIR" ]; then
-        echo "❌ No writable bin directory found. Please run this script with appropriate permissions."
+        echo "❌ No writable bin directory found in \$PATH. Please run this script with appropriate permissions."
         exit 1
     fi
 
