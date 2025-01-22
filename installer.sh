@@ -12,20 +12,23 @@ REPO_URL="https://raw.githubusercontent.com/smilexth/shelldancer/main/shelldance
 # Function to check if shelldancer is already installed
 check_existing() {
     if command -v "$SCRIPT_NAME" &> /dev/null; then
-        REMOTE_VERSION=$(curl -sSL "$REPO_URL" | sed -n -E 's/^.*echo "Shell Dancer v([0-9\.]+)".*$/\1/p')
-        LOCAL_VERSION="$($SCRIPT_NAME -v 2>/dev/null)"
-        if [ "$LOCAL_VERSION" = "$REMOTE_VERSION" ]; then
-            echo "✅ Shell Dancer is already the latest version ($LOCAL_VERSION)."
+        REMOTE_VERSION=$(curl -sSL --no-cache "$REPO_URL" | grep -o 'Shell Dancer v[0-9.]*' | cut -d'v' -f2)
+        LOCAL_VERSION=$($SCRIPT_NAME -v 2>/dev/null | grep -o 'Shell Dancer v[0-9.]*' | cut -d'v' -f2)
+        
+        if [[ $(echo -e "$LOCAL_VERSION\n$REMOTE_VERSION" | sort -V | tail -n1) == "$LOCAL_VERSION" ]]; then
+            echo "✅ Shell Dancer is already the latest version (v$LOCAL_VERSION)."
             exit 0
-        fi
-        echo "✅ Shell Dancer is installed at $(command -v $SCRIPT_NAME)"
-        read -p "Do you want to update it? [y/N]: " update_choice
-        if [[ "$update_choice" =~ ^[Yy]$ ]]; then
-            echo "Updating Shell Dancer..."
-            return 1
         else
-            echo "Installation aborted."
-            exit 0
+            echo "✅ Shell Dancer v$LOCAL_VERSION is installed at $(command -v $SCRIPT_NAME)"
+            echo "ℹ️  A newer version (v$REMOTE_VERSION) is available!"
+            read -p "Do you want to update it? [y/N]: " update_choice
+            if [[ "$update_choice" =~ ^[Yy]$ ]]; then
+                echo "Updating Shell Dancer..."
+                return 1
+            else
+                echo "Installation aborted."
+                exit 0
+            fi
         fi
     fi
     return 0
