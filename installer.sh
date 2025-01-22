@@ -34,18 +34,17 @@ version_gt() {
     return 1
 }
 
-
-
 # Function to check if shelldancer is already installed
 check_existing() {
     if command -v "$SCRIPT_NAME" &> /dev/null; then
-        echo "Checking for updates..."
+        INSTALL_PATH=$(command -v "$SCRIPT_NAME")
+        echo "Checking for updates at $INSTALL_PATH..."
 
         # Get the remote version
         REMOTE_VERSION=$(curl -sSL "$REPO_URL" | grep -o 'Shell Dancer v[0-9.]*' | head -n1 | cut -d'v' -f2)
 
         # Get the local version
-        LOCAL_VERSION=$($SCRIPT_NAME -v 2>/dev/null | grep -o 'Shell Dancer v[0-9.]*' | head -n1 | cut -d'v' -f2)
+        LOCAL_VERSION=$("$SCRIPT_NAME" -v 2>/dev/null | grep -o 'Shell Dancer v[0-9.]*' | head -n1 | cut -d'v' -f2)
 
         # Validate remote version
         if [ -z "$REMOTE_VERSION" ]; then
@@ -61,7 +60,7 @@ check_existing() {
 
         
         if version_gt "$REMOTE_VERSION" "$LOCAL_VERSION"; then
-            echo "✅ Shell Dancer v$LOCAL_VERSION is installed at $(command -v $SCRIPT_NAME)"
+            echo "✅ Shell Dancer v$LOCAL_VERSION is installed at $INSTALL_PATH"
             echo "ℹ️ A newer version (v$REMOTE_VERSION) is available!"
 
             while true; do
@@ -131,7 +130,6 @@ install_shelldancer() {
         exit 1
     fi
 }
-
 
 # Main script execution
 echo "Starting Shell Dancer Installer..."
