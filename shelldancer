@@ -69,11 +69,12 @@ create_reverse_shell() {
     fi
 }
 
+# Show menu once at first connect
+display_menu
+
 # Main loop
 while true; do
-    display_menu
     read choice
-
     case $choice in
         1)
             create_port_tunnel
