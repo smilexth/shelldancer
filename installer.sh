@@ -47,14 +47,15 @@ install_shelldancer() {
         exit 1
     fi
 
-    echo -ne "Downloading Shell Dancer... Please wait. "
+    echo -ne "Downloading Shell Dancer "
     for i in {1..100}; do
         barCount=$((i/5))
         bar=""
         for ((j=1; j<=barCount; j++)); do
-            bar="${bar}l"
+            bar="${bar}|"
         done
-        echo -ne "[ ${bar} ${i}% ]\r"
+        echo -ne "[          ] ${i}%\r"
+        echo -ne "\e[11D${bar}\e[${#bar}C\r"
         sleep 0.02
     done
     echo ""
