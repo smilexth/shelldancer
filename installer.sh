@@ -102,7 +102,11 @@ install_shelldancer() {
     echo -e "Downloading Shell Dancer..."
 
     # Simulated progress bar with colors
-    curl --progress-bar -sSL "$REPO_URL" -o "$INSTALL_DIR/$SCRIPT_NAME" &
+    curl \
+        -H "Cache-Control: no-cache, no-store, must-revalidate" \
+        -H "Pragma: no-cache" \
+        -H "Expires: 0" \
+        --progress-bar -sSL "$REPO_URL" -o "$INSTALL_DIR/$SCRIPT_NAME" &
     CURL_PID=$!  # Store the curl process ID
 
     # Progress bar display
