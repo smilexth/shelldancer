@@ -52,7 +52,7 @@ install_shelldancer() {
         barCount=$((i/5))
         bar=""
         for ((j=1; j<=barCount; j++)); do
-            bar="${bar}I"
+            bar="${bar}l"
         done
         echo -ne "[ ${bar} ${i}% ]\r"
         sleep 0.02
