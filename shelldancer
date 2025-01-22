@@ -1,12 +1,9 @@
 #!/bin/bash
 
 # ==========================================================
-# Shell Dancer Installer and Utility
-# Adds support for user/pass or SSH key authentication
+# Shell Dancer Utility
+# Supports Port Tunnels and Reverse Shells
 # ==========================================================
-
-SCRIPT_NAME="shelldancer"
-REPO_URL="https://raw.githubusercontent.com/smilexth/shelldancer/main/shelldancer"
 
 # Function to prompt for authentication method
 prompt_authentication_method() {
@@ -18,10 +15,8 @@ prompt_authentication_method() {
         if [[ "$auth_choice" == "1" ]]; then
             echo "You chose Username/Password."
             read -p "Enter your username: " username < /dev/tty
-            read -s -p "Enter your password: " password < /dev/tty
-            echo ""
             AUTH_TYPE="userpass"
-            AUTH_DETAILS=("username=$username" "password=$password")
+            AUTH_DETAILS=("username=$username")
             break
         elif [[ "$auth_choice" == "2" ]]; then
             echo "You chose SSH Key File."
@@ -43,17 +38,23 @@ prompt_authentication_method() {
 create_port_tunnel() {
     prompt_authentication_method
     echo "Creating a Port Tunnel..."
-    read -p "Enter remote host (e.g., user@host.com): " remote_host < /dev/tty
+    read -p "Enter bind address (e.g., 127.0.0.1 or 0.0.0.0): " bind_address < /dev/tty
     read -p "Enter local port to forward: " local_port < /dev/tty
+    read -p "Enter remote host (e.g., localhost): " remote_host < /dev/tty
     read -p "Enter remote port to forward to: " remote_port < /dev/tty
+    read -p "Enter SSH server address (e.g., user@remote_host): " ssh_server < /dev/tty
 
+    autossh_command="autossh -M 0 -f -N -T -L $bind_address:$local_port:$remote_host:$remote_port"
     if [[ "$AUTH_TYPE" == "userpass" ]]; then
-        echo "Using Username/Password for authentication..."
-        autossh -M 0 -f -N -L "$local_port:localhost:$remote_port" "$remote_host"
+        echo "Using Username: ${AUTH_DETAILS[0]#username=} for authentication..."
+        autossh_command="$autossh_command ${AUTH_DETAILS[0]#username=}@$ssh_server"
     elif [[ "$AUTH_TYPE" == "sshkey" ]]; then
-        echo "Using SSH Key File: ${AUTH_DETAILS[0]}"
-        autossh -M 0 -i "${AUTH_DETAILS[0]#keypath=}" -f -N -L "$local_port:localhost:$remote_port" "$remote_host"
+        echo "Using SSH Key File: ${AUTH_DETAILS[0]#keypath=}"
+        autossh_command="$autossh_command -i ${AUTH_DETAILS[0]#keypath=} $ssh_server"
     fi
+
+    echo "⚙️  Command: $autossh_command"
+    eval "$autossh_command"
 
     echo "✅ Port tunnel created successfully."
 }
@@ -62,17 +63,22 @@ create_port_tunnel() {
 create_reverse_shell() {
     prompt_authentication_method
     echo "Creating a Reverse Shell..."
-    read -p "Enter remote host (e.g., user@host.com): " remote_host < /dev/tty
+    read -p "Enter bind address (e.g., 127.0.0.1 or 0.0.0.0): " bind_address < /dev/tty
     read -p "Enter remote port to bind: " remote_port < /dev/tty
     read -p "Enter local port to listen on: " local_port < /dev/tty
+    read -p "Enter SSH server address (e.g., user@remote_host): " ssh_server < /dev/tty
 
+    autossh_command="autossh -M 0 -f -N -T -R $bind_address:$remote_port:localhost:$local_port"
     if [[ "$AUTH_TYPE" == "userpass" ]]; then
-        echo "Using Username/Password for authentication..."
-        autossh -M 0 -f -N -R "$remote_port:localhost:$local_port" "$remote_host"
+        echo "Using Username: ${AUTH_DETAILS[0]#username=} for authentication..."
+        autossh_command="$autossh_command ${AUTH_DETAILS[0]#username=}@$ssh_server"
     elif [[ "$AUTH_TYPE" == "sshkey" ]]; then
-        echo "Using SSH Key File: ${AUTH_DETAILS[0]}"
-        autossh -M 0 -i "${AUTH_DETAILS[0]#keypath=}" -f -N -R "$remote_port:localhost:$local_port" "$remote_host"
+        echo "Using SSH Key File: ${AUTH_DETAILS[0]#keypath=}"
+        autossh_command="$autossh_command -i ${AUTH_DETAILS[0]#keypath=} $ssh_server"
     fi
+
+    echo "⚙️  Command: $autossh_command"
+    eval "$autossh_command"
 
     echo "✅ Reverse shell created successfully."
 }
