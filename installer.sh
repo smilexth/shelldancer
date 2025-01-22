@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # ==========================================================
 # Shell Dancer Installer
 # Copyright © SmileX
@@ -38,6 +39,16 @@ check_existing() {
     if command -v "$SCRIPT_NAME" &> /dev/null; then
         REMOTE_VERSION=$(curl -sSL "$REPO_URL" | grep -o 'Shell Dancer v[0-9.]*' | head -n1 | cut -d'v' -f2)
         LOCAL_VERSION=$($SCRIPT_NAME -v 2>/dev/null | grep -o 'Shell Dancer v[0-9.]*' | head -n1 | cut -d'v' -f2)
+
+        if [ -z "$REMOTE_VERSION" ]; then
+            echo "❌ Unable to fetch the remote version. Please check the repository URL."
+            exit 1
+        fi
+
+        if [ -z "$LOCAL_VERSION" ]; then
+            echo "❌ Unable to detect the local version. Reinstalling Shell Dancer."
+            return 1
+        fi
 
         if version_gt "$REMOTE_VERSION" "$LOCAL_VERSION"; then
             echo "✅ Shell Dancer v$LOCAL_VERSION is installed at $(command -v $SCRIPT_NAME)"
