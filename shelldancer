@@ -21,6 +21,12 @@ if ! command -v autossh &> /dev/null; then
     exit 1
 fi
 
+# Check for version argument
+if [[ "$1" == "-v" ]]; then
+    echo "Shell Dancer v0.1"
+    exit 0
+fi
+
 # Function to display menu
 display_menu() {
     echo -e "${BLUE}==================================================${NC}"
