@@ -12,7 +12,7 @@ REPO_URL="https://raw.githubusercontent.com/smilexth/shelldancer/main/shelldance
 # Function to check if shelldancer is already installed
 check_existing() {
     if command -v "$SCRIPT_NAME" &> /dev/null; then
-        REMOTE_VERSION=$(curl -sSL  "$REPO_URL" | grep -o 'Shell Dancer v[0-9.]*' | cut -d'v' -f2)
+        REMOTE_VERSION=$(curl -sSL "$REPO_URL" | grep -o 'Shell Dancer v[0-9.]*' | cut -d'v' -f2)
         LOCAL_VERSION=$($SCRIPT_NAME -v 2>/dev/null | grep -o 'Shell Dancer v[0-9.]*' | cut -d'v' -f2)
         
         # Convert versions to comparable numbers (e.g., 0.5 -> 5, 0.10 -> 10)
@@ -83,6 +83,6 @@ check_existing
 if [ $? -eq 1 ]; then
     install_shelldancer
 else
-    echo "Installing Shell Dancer..."
+    #echo "Installing Shell Dancer..."
     install_shelldancer
 fi
