@@ -11,7 +11,6 @@ REPO_URL="https://raw.githubusercontent.com/smilexth/shelldancer/main/shelldance
 
 # Function to compare two version strings
 version_gt() {
-    # Returns 0 (true) if $1 > $2, 1 (false) otherwise
     local IFS=.
     local i ver1=($1) ver2=($2)
 
@@ -40,16 +39,15 @@ check_existing() {
     if command -v "$SCRIPT_NAME" &> /dev/null; then
         REMOTE_VERSION=$(curl -sSL "$REPO_URL" | grep -o 'Shell Dancer v[0-9.]*' | head -n1 | cut -d'v' -f2)
         LOCAL_VERSION=$($SCRIPT_NAME -v 2>/dev/null | grep -o 'Shell Dancer v[0-9.]*' | head -n1 | cut -d'v' -f2)
-        
+
         if version_gt "$REMOTE_VERSION" "$LOCAL_VERSION"; then
             echo "✅ Shell Dancer v$LOCAL_VERSION is installed at $(command -v $SCRIPT_NAME)"
-            echo "ℹ️  A newer version (v$REMOTE_VERSION) is available!"
+            echo "ℹ️ A newer version (v$REMOTE_VERSION) is available!"
             read -p "Do you want to update it? [y/N]: " update_choice
             if [[ "$update_choice" =~ ^[Yy]$ ]]; then
-                echo "Updating Shell Dancer..."
-                return 1
+                return 1  # Update is needed
             else
-                echo "Installation aborted."
+                echo "Skipping update. Shell Dancer remains at v$LOCAL_VERSION."
                 exit 0
             fi
         else
@@ -57,7 +55,7 @@ check_existing() {
             exit 0
         fi
     fi
-    return 0
+    return 0  # Not installed, proceed with installation
 }
 
 # Function to download and install Shell Dancer
@@ -76,18 +74,7 @@ install_shelldancer() {
         exit 1
     fi
 
-    echo -ne "Downloading Shell Dancer\n"
-    for i in {1..100}; do
-        barCount=$((i/5))
-        bar=""
-        for ((j=1; j<=barCount; j++)); do
-            bar="${bar}|"
-        done
-        echo -ne "[                    ] ${i}%\r"
-        echo -ne "\e[21D${bar}\e[${#bar}C\r"
-        sleep 0.02
-    done
-    echo ""
+    echo "Downloading Shell Dancer..."
     curl --progress-bar -sSL "$REPO_URL" -o "$INSTALL_DIR/$SCRIPT_NAME"
 
     if [ $? -eq 0 ]; then
@@ -105,6 +92,5 @@ check_existing
 if [ $? -eq 1 ]; then
     install_shelldancer
 else
-    echo "Installation aborted."
-    exit 0
+    echo "Installation complete."
 fi
