@@ -8,7 +8,7 @@
 
 SCRIPT_NAME="shelldancer"
 REPO_URL="https://raw.githubusercontent.com/smilexth/shelldancer/main/shelldancer"
-SHELL_DANCER_LATEST_VERSION="Shell Dancer v0.2"
+SHELL_DANCER_LATEST_VERSION="Shell Dancer v0.3"
 
 # Function to check if shelldancer is already installed
 check_existing() {
