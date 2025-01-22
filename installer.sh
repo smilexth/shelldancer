@@ -42,6 +42,11 @@ install_shelldancer() {
     fi
 
     echo "Downloading Shell Dancer... Please wait."
+    for i in {1..100}; do
+        echo -ne "Progress: $i%\r"
+        sleep 0.02
+    done
+    echo ""
     curl --progress-bar -sSL "$REPO_URL" -o "$INSTALL_DIR/$SCRIPT_NAME"
 
     if [ $? -eq 0 ]; then
