@@ -62,15 +62,19 @@ check_existing() {
             echo "✅ Shell Dancer v$LOCAL_VERSION is installed at $(command -v $SCRIPT_NAME)"
             echo "ℹ️ A newer version (v$REMOTE_VERSION) is available!"
             
-            # Ensure the prompt is always reached
+            # Ensure the prompt logic is correct and doesn't skip
             while true; do
-                read -p "Do you want to update to v$REMOTE_VERSION? [y/N]: " update_choice
-                case "$update_choice" in
-                    [Yy]*) return 1 ;;  # Update is needed
-                    [Nn]*|"") echo "Skipping update. Shell Dancer remains at v$LOCAL_VERSION."; exit 0 ;;
-                    *) echo "Please enter y or n." ;;
-                esac
+                read -r -p "Do you want to update to v$REMOTE_VERSION? [y/N]: " update_choice
+                if [[ "$update_choice" =~ ^[Yy]$ ]]; then
+                    return 1  # Update is needed
+                elif [[ "$update_choice" =~ ^[Nn]$ ]] || [[ -z "$update_choice" ]]; then
+                    echo "Skipping update. Shell Dancer remains at v$LOCAL_VERSION."
+                    exit 0
+                else
+                    echo "Please enter y or n."
+                fi
             done
+
         else
             echo "✅ Shell Dancer is already the latest version (v$LOCAL_VERSION)."
             exit 0
