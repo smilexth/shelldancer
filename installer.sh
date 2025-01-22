@@ -21,7 +21,7 @@ check_existing() {
         
         if [ "$LOCAL_NUM" -lt "$REMOTE_NUM" ]; then
             echo "✅ Shell Dancer v$LOCAL_VERSION is installed at $(command -v $SCRIPT_NAME)"
-            echo "ℹ️  A newer version (v$REMOTE_VERSION) is available!"
+            echo "ℹ️ A newer version (v$REMOTE_VERSION) is available!"
             read -p "Do you want to update it? [y/N]: " update_choice
             if [[ "$update_choice" =~ ^[Yy]$ ]]; then
                 echo "Updating Shell Dancer..."
