@@ -41,8 +41,8 @@ install_shelldancer() {
         exit 1
     fi
 
-    echo "Downloading Shell Dancer..."
-    curl -sSL "$REPO_URL" -o "$INSTALL_DIR/$SCRIPT_NAME"
+    echo "Downloading Shell Dancer... Please wait."
+    curl --progress-bar -sSL "$REPO_URL" -o "$INSTALL_DIR/$SCRIPT_NAME"
 
     if [ $? -eq 0 ]; then
         chmod +x "$INSTALL_DIR/$SCRIPT_NAME"
