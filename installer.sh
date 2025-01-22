@@ -8,11 +8,17 @@
 
 SCRIPT_NAME="shelldancer"
 REPO_URL="https://raw.githubusercontent.com/smilexth/shelldancer/main/shelldancer"
+SHELL_DANCER_LATEST_VERSION="Shell Dancer v0.1"
 
 # Function to check if shelldancer is already installed
 check_existing() {
     if command -v "$SCRIPT_NAME" &> /dev/null; then
-        echo "✅ Shell Dancer is already installed at $(command -v $SCRIPT_NAME)"
+        LOCAL_VERSION="$($SCRIPT_NAME -v 2>/dev/null)"
+        if [ "$LOCAL_VERSION" = "$SHELL_DANCER_LATEST_VERSION" ]; then
+            echo "✅ Shell Dancer is already the latest version ($LOCAL_VERSION)."
+            exit 0
+        fi
+        echo "✅ Shell Dancer is installed at $(command -v $SCRIPT_NAME)"
         read -p "Do you want to update it? [y/N]: " update_choice
         if [[ "$update_choice" =~ ^[Yy]$ ]]; then
             echo "Updating Shell Dancer..."
