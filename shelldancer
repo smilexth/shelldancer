@@ -23,7 +23,7 @@ fi
 
 # Check for version argument
 if [[ "$1" == "-v" ]]; then
-    echo "Shell Dancer v0.1"
+    echo "Shell Dancer v0.3"
     exit 0
 fi
 
