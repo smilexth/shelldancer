@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # ==========================================================
 # Shell Dancer Installer
 # Copyright © SmileX
