@@ -49,7 +49,12 @@ install_shelldancer() {
 
     echo "Downloading Shell Dancer... Please wait."
     for i in {1..100}; do
-        echo -ne "Progress: $i%\r"
+        barCount=$((i/5))
+        bar=""
+        for ((j=1; j<=barCount; j++)); do
+            bar="${bar}I"
+        done
+        echo -ne "[ ${bar} ${i}% ]\r"
         sleep 0.02
     done
     echo ""
