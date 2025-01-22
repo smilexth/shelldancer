@@ -59,7 +59,7 @@ install_shelldancer() {
         sleep 0.02
     done
     echo ""
-    curl --progress-bar --no-cache -sSL "$REPO_URL" -o "$INSTALL_DIR/$SCRIPT_NAME"
+    curl --progress-bar -H 'Cache-Control: no-cache' -sSL "$REPO_URL" -o "$INSTALL_DIR/$SCRIPT_NAME"
 
     if [ $? -eq 0 ]; then
         chmod +x "$INSTALL_DIR/$SCRIPT_NAME"
