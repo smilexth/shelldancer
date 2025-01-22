@@ -82,6 +82,6 @@ check_existing
 if [ $? -eq 1 ]; then
     install_shelldancer
 else
-    #echo "Installing Shell Dancer..."
-    install_shelldancer
+    echo "Installation aborted."
+    exit 0
 fi
