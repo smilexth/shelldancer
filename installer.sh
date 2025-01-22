@@ -12,7 +12,7 @@ REPO_URL="https://raw.githubusercontent.com/smilexth/shelldancer/main/shelldance
 # Function to check if shelldancer is already installed
 check_existing() {
     if command -v "$SCRIPT_NAME" &> /dev/null; then
-        REMOTE_VERSION="$(curl -sSL --no-cache "$REPO_URL" | sed -n -E 's/^.*echo \"(Shell Dancer v[0-9\.]+)\"$/\1/p')"
+        REMOTE_VERSION="$(curl -sSL "$REPO_URL" | sed -n -E 's/^.*echo \"(Shell Dancer v[0-9\.]+)\"$/\1/p')"
         LOCAL_VERSION="$($SCRIPT_NAME -v 2>/dev/null)"
         if [ "$LOCAL_VERSION" = "$REMOTE_VERSION" ]; then
             echo "✅ Shell Dancer is already the latest version ($LOCAL_VERSION)."
@@ -47,19 +47,19 @@ install_shelldancer() {
         exit 1
     fi
 
-    echo -ne "Downloading Shell Dancer "
+    echo -ne "Downloading Shell Dancer\n"
     for i in {1..100}; do
         barCount=$((i/5))
         bar=""
         for ((j=1; j<=barCount; j++)); do
             bar="${bar}|"
         done
-        echo -ne "[          ] ${i}%\r"
-        echo -ne "\e[11D${bar}\e[${#bar}C\r"
+        echo -ne "[                    ] ${i}%\r"
+        echo -ne "\e[21D${bar}\e[${#bar}C\r"
         sleep 0.02
     done
     echo ""
-    curl --progress-bar -H 'Cache-Control: no-cache' -sSL "$REPO_URL" -o "$INSTALL_DIR/$SCRIPT_NAME"
+    curl --progress-bar -sSL "$REPO_URL" -o "$INSTALL_DIR/$SCRIPT_NAME"
 
     if [ $? -eq 0 ]; then
         chmod +x "$INSTALL_DIR/$SCRIPT_NAME"
