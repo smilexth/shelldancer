@@ -58,7 +58,6 @@ check_existing() {
             return 1
         fi
 
-        
         if version_gt "$REMOTE_VERSION" "$LOCAL_VERSION"; then
             echo "✅ Shell Dancer v$LOCAL_VERSION is installed at $INSTALL_PATH"
             echo "ℹ️ A newer version (v$REMOTE_VERSION) is available!"
@@ -74,6 +73,9 @@ check_existing() {
                     echo "Please enter y or n."
                 fi
             done
+        else
+            echo "✅ Shell Dancer is already the latest version (v$LOCAL_VERSION)."
+            exit 0
         fi
     fi
     return 0  # Not installed, proceed with installation
@@ -101,22 +103,20 @@ install_shelldancer() {
     echo -e "Downloading Shell Dancer..."
 
     # Simulated progress bar with colors
-    curl \
-        -H "Cache-Control: no-cache, no-store, must-revalidate" \
-        -H "Pragma: no-cache" \
-        -H "Expires: 0" \
-        --progress-bar -sSL "$REPO_URL" -o "$INSTALL_DIR/$SCRIPT_NAME" &
+    curl --progress-bar -sSL "$REPO_URL" -o "$INSTALL_DIR/$SCRIPT_NAME" &
     CURL_PID=$!  # Store the curl process ID
 
     # Progress bar display
+    COUNT=0
+    TOTAL=50
     while kill -0 $CURL_PID 2>/dev/null; do
-        for i in $(seq 1 50); do
-            BAR=$(printf "\e[42m \e[0m%.0s" $(seq 1 $i))  # Green bar
-            SPACES=$(printf "%.0s " $(seq $i 50))  # Empty spaces
-            PERCENT=$((i * 2))  # Progress percentage
-            echo -ne "[${BAR}${SPACES}] ${PERCENT}%\r"
-            sleep 0.1
-        done
+        COUNT=$((COUNT + 1))
+        if [ $COUNT -gt $TOTAL ]; then COUNT=1; fi
+        FILLED=$(printf "\e[42m \e[0m%.0s" $(seq 1 $COUNT))  # Green bar
+        EMPTY=$(printf "%.0s " $(seq $COUNT $TOTAL))  # Empty spaces
+        PERCENT=$((COUNT * 2))  # Progress percentage
+        echo -ne "[${FILLED}${EMPTY}] ${PERCENT}%\r"
+        sleep 0.1
     done
 
     wait $CURL_PID  # Wait for curl to finish
@@ -137,5 +137,6 @@ check_existing
 if [ $? -eq 1 ]; then
     install_shelldancer
 else
-   echo "Completed!"
+    echo "No Shell Dancer found in PATH. Proceeding with installation..."
+    install_shelldancer
 fi
