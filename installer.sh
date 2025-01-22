@@ -94,17 +94,35 @@ install_shelldancer() {
         exit 1
     fi
 
-    echo "Downloading Shell Dancer..."
-    curl --progress-bar -sSL "$REPO_URL" -o "$INSTALL_DIR/$SCRIPT_NAME"
+    echo -e "Downloading Shell Dancer..."
 
+    # Simulated progress bar with colors
+    curl --progress-bar -sSL "$REPO_URL" -o "$INSTALL_DIR/$SCRIPT_NAME" &
+    CURL_PID=$!  # Store the curl process ID
+
+    # Progress bar display
+    while kill -0 $CURL_PID 2>/dev/null; do
+        for i in $(seq 1 50); do
+            BAR=$(printf "\e[42m \e[0m%.0s" $(seq 1 $i))  # Green bar
+            SPACES=$(printf "%.0s " $(seq $i 50))  # Empty spaces
+            PERCENT=$((i * 2))  # Progress percentage
+            echo -ne "[${BAR}${SPACES}] ${PERCENT}%\r"
+            sleep 0.1
+        done
+    done
+
+    wait $CURL_PID  # Wait for curl to finish
+
+    # Check download result
     if [ $? -eq 0 ]; then
         chmod +x "$INSTALL_DIR/$SCRIPT_NAME"
-        echo "✅ Shell Dancer has been installed at $INSTALL_DIR/$SCRIPT_NAME"
+        echo -e "\n✅ Shell Dancer has been installed at $INSTALL_DIR/$SCRIPT_NAME"
     else
-        echo "❌ Failed to download Shell Dancer. Please check your network connection."
+        echo -e "\n❌ Failed to download Shell Dancer. Please check your network connection."
         exit 1
     fi
 }
+
 
 # Main script execution
 echo "Starting Shell Dancer Installer..."
