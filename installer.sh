@@ -47,7 +47,7 @@ install_shelldancer() {
         exit 1
     fi
 
-    echo "Downloading Shell Dancer... Please wait."
+    echo -ne "Downloading Shell Dancer... Please wait. "
     for i in {1..100}; do
         barCount=$((i/5))
         bar=""
