@@ -9,16 +9,39 @@
 SCRIPT_NAME="shelldancer"
 REPO_URL="https://raw.githubusercontent.com/smilexth/shelldancer/main/shelldancer"
 
+# Function to compare two version strings
+version_gt() {
+    # Returns 0 (true) if $1 > $2, 1 (false) otherwise
+    local IFS=.
+    local i ver1=($1) ver2=($2)
+
+    # Fill empty fields in ver1 with zeros
+    for ((i=${#ver1[@]}; i<${#ver2[@]}; i++)); do
+        ver1[i]=0
+    done
+
+    # Fill empty fields in ver2 with zeros
+    for ((i=${#ver2[@]}; i<${#ver1[@]}; i++)); do
+        ver2[i]=0
+    done
+
+    for ((i=0; i<${#ver1[@]}; i++)); do
+        if ((10#${ver1[i]} > 10#${ver2[i]})); then
+            return 0
+        elif ((10#${ver1[i]} < 10#${ver2[i]})); then
+            return 1
+        fi
+    done
+    return 1
+}
+
 # Function to check if shelldancer is already installed
 check_existing() {
     if command -v "$SCRIPT_NAME" &> /dev/null; then
         REMOTE_VERSION=$(curl -sSL "$REPO_URL" | grep -o 'Shell Dancer v[0-9.]*' | cut -d'v' -f2)
         LOCAL_VERSION=$($SCRIPT_NAME -v 2>/dev/null | grep -o 'Shell Dancer v[0-9.]*' | cut -d'v' -f2)
         
-        # Determine the highest version using sort -V
-        HIGHEST_VERSION=$(echo -e "$LOCAL_VERSION\n$REMOTE_VERSION" | sort -V | tail -n1)
-        
-        if [[ "$HIGHEST_VERSION" == "$REMOTE_VERSION" && "$LOCAL_VERSION" != "$REMOTE_VERSION" ]]; then
+        if version_gt "$REMOTE_VERSION" "$LOCAL_VERSION"; then
             echo "✅ Shell Dancer v$LOCAL_VERSION is installed at $(command -v $SCRIPT_NAME)"
             echo "ℹ️  A newer version (v$REMOTE_VERSION) is available!"
             read -p "Do you want to update it? [y/N]: " update_choice
