@@ -2,85 +2,42 @@
 
 # ==========================================================
 # Shell Dancer Utility
-# Supports Port Tunnels and Reverse Shells
+# Supports Reverse Tunnels with SSH Key Authentication
+# Includes improved reliability based on successful autossh configuration.
 # ==========================================================
 
-# Function to prompt for authentication method
-prompt_authentication_method() {
-    echo "Choose authentication method:"
-    echo "1. Username/Password"
-    echo "2. SSH Key File"
-    while true; do
-        read -p "Enter your choice (1 or 2): " auth_choice < /dev/tty
-        if [[ "$auth_choice" == "1" ]]; then
-            echo "You chose Username/Password."
-            read -p "Enter your username: " username < /dev/tty
-            AUTH_TYPE="userpass"
-            AUTH_DETAILS=("username=$username")
-            break
-        elif [[ "$auth_choice" == "2" ]]; then
-            echo "You chose SSH Key File."
-            read -p "Enter the full path to your SSH key file: " key_path < /dev/tty
-            if [ -f "$key_path" ]; then
-                AUTH_TYPE="sshkey"
-                AUTH_DETAILS=("keypath=$key_path")
-                break
-            else
-                echo "The specified key file does not exist. Please try again."
-            fi
-        else
-            echo "Invalid choice. Please enter 1 or 2."
-        fi
-    done
-}
+# Function to handle Tunnel Creation
+create_tunnel() {
+    echo "Creating a Tunnel..."
+    read -p "Enter SSH port (default: 22): " ssh_port < /dev/tty
+    ssh_port=${ssh_port:-22}
+    read -p "Enter remote port to bind (traffic will come to this port): " remote_port < /dev/tty
+    read -p "Enter local port to listen on (traffic will be forwarded here): " local_port < /dev/tty
+    read -p "Enter SSH username: " username < /dev/tty
+    read -p "Enter SSH hostname (e.g., remote server address): " hostname < /dev/tty
+    read -p "Enter the full path to your SSH key file: " key_path < /dev/tty
 
-# Function to handle Port Tunnel Creation
-create_port_tunnel() {
-    prompt_authentication_method
-    echo "Creating a Port Tunnel..."
-    read -p "Enter bind address (e.g., 127.0.0.1 or 0.0.0.0): " bind_address < /dev/tty
-    read -p "Enter local port to forward: " local_port < /dev/tty
-    read -p "Enter remote host (e.g., localhost): " remote_host < /dev/tty
-    read -p "Enter remote port to forward to: " remote_port < /dev/tty
-    read -p "Enter SSH server address (e.g., user@remote_host): " ssh_server < /dev/tty
-
-    autossh_command="autossh -M 0 -f -N -T -L $bind_address:$local_port:$remote_host:$remote_port"
-    if [[ "$AUTH_TYPE" == "userpass" ]]; then
-        echo "Using Username: ${AUTH_DETAILS[0]#username=} for authentication..."
-        autossh_command="$autossh_command ${AUTH_DETAILS[0]#username=}@$ssh_server"
-    elif [[ "$AUTH_TYPE" == "sshkey" ]]; then
-        echo "Using SSH Key File: ${AUTH_DETAILS[0]#keypath=}"
-        autossh_command="$autossh_command -i ${AUTH_DETAILS[0]#keypath=} $ssh_server"
+    # Validate SSH key file
+    if [ ! -f "$key_path" ]; then
+        echo "❌ The specified SSH key file does not exist. Please try again."
+        return
     fi
 
+    # Construct and run the autossh command
+    autossh_command="autossh -M 0 -N \
+    -o ServerAliveInterval=30 \
+    -o ServerAliveCountMax=3 \
+    -o StrictHostKeyChecking=no \
+    -o ExitOnForwardFailure=yes \
+    -p $ssh_port -t -t \
+    -i $key_path \
+    -R 0.0.0.0:$remote_port:localhost:$local_port \
+    $username@$hostname"
+    
     echo "⚙️  Command: $autossh_command"
     eval "$autossh_command"
 
-    echo "✅ Port tunnel created successfully."
-}
-
-# Function to handle Reverse Shell Creation
-create_reverse_shell() {
-    prompt_authentication_method
-    echo "Creating a Reverse Shell..."
-    read -p "Enter bind address (e.g., 127.0.0.1 or 0.0.0.0): " bind_address < /dev/tty
-    read -p "Enter remote port to bind: " remote_port < /dev/tty
-    read -p "Enter local port to listen on: " local_port < /dev/tty
-    read -p "Enter SSH server address (e.g., user@remote_host): " ssh_server < /dev/tty
-
-    autossh_command="autossh -M 0 -f -N -T -R $bind_address:$remote_port:localhost:$local_port"
-    if [[ "$AUTH_TYPE" == "userpass" ]]; then
-        echo "Using Username: ${AUTH_DETAILS[0]#username=} for authentication..."
-        autossh_command="$autossh_command ${AUTH_DETAILS[0]#username=}@$ssh_server"
-    elif [[ "$AUTH_TYPE" == "sshkey" ]]; then
-        echo "Using SSH Key File: ${AUTH_DETAILS[0]#keypath=}"
-        autossh_command="$autossh_command -i ${AUTH_DETAILS[0]#keypath=} $ssh_server"
-    fi
-
-    echo "⚙️  Command: $autossh_command"
-    eval "$autossh_command"
-
-    echo "✅ Reverse shell created successfully."
+    echo "✅ Tunnel created successfully."
 }
 
 # Main menu
@@ -88,24 +45,20 @@ main_menu() {
     echo "==============================="
     echo "       Shell Dancer Menu       "
     echo "==============================="
-    echo "1. Create Port Tunnel"
-    echo "2. Create Reverse Shell"
-    echo "3. Exit"
+    echo "1. Create Tunnel"
+    echo "2. Exit"
     while true; do
-        read -p "Choose an option [1-3]: " choice < /dev/tty
+        read -p "Choose an option [1-2]: " choice < /dev/tty
         case "$choice" in
             1)
-                create_port_tunnel
+                create_tunnel
                 ;;
             2)
-                create_reverse_shell
-                ;;
-            3)
                 echo "Exiting Shell Dancer. Goodbye!"
                 exit 0
                 ;;
             *)
-                echo "Invalid option. Please choose between 1-3."
+                echo "Invalid option. Please choose between 1-2."
                 ;;
         esac
     done
