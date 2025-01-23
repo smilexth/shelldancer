@@ -188,6 +188,12 @@ This will ensure that your SSH tunnel starts automatically on system boot and re
    ```
 ---
 
+## 📅 Roadmap
+
+📅 [Q2/2025] Switch option between `ssh` and `autossh`
+📅 [Q2/2025] Automate run as a Services (Optional Generate) 
+📅 [Q2/2025] Support on another distributions
+
 ## 📄 License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
