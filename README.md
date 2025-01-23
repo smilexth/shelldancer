@@ -26,7 +26,17 @@ Before using Shell Dancer, ensure the following dependencies are installed on yo
 
 ## 🛠️ Installation
 
-### 📝 Option 1: Manual Installation
+### ⚡ Option 1: Quick Install using `curl`
+
+```sh
+curl -sSL https://raw.githubusercontent.com/smilexth/shelldancer/main/installer.sh | bash
+```
+
+
+Follow the on-screen instructions to create port tunnels and reverse shells.
+
+
+### 📝 Option 2: Manual Installation
 
 ```sh
 git clone https://github.com/smilexth/shelldancer.git
@@ -45,14 +55,6 @@ To install Shell Dancer, run the `installer.sh` script from the project director
 ./installer.sh
 ```
 
-### ⚡ Option 2: Quick Install using `curl`
-
-```sh
-curl -sSL https://raw.githubusercontent.com/smilexth/shelldancer/main/installer.sh | bash
-```
-
-
-Follow the on-screen instructions to create port tunnels and reverse shells.
 
 ## 🚀 After Installation
 
