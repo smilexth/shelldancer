@@ -1,0 +1,6 @@
+# Ignore shelldancer variations but keep the main script
+shelldancer-*
+shelldancer.*
+*shelldancer copy*
+*copy of shelldancer*
+!shelldancer
