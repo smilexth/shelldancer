@@ -6,22 +6,51 @@
 # Includes improved reliability based on successful autossh configuration.
 # ==========================================================
 
+# Color definitions
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Function to display the menu
+show_menu() {
+    echo "==============================="
+    echo "       Shell Dancer Menu       "
+    echo "==============================="
+    echo "1. Create Tunnel"
+    echo "2. Exit"
+}
+
 # Function to handle Tunnel Creation
 create_tunnel() {
     echo "Creating a Tunnel..."
     read -p "Enter SSH port (default: 22): " ssh_port < /dev/tty
     ssh_port=${ssh_port:-22}
-    read -p "Enter remote port to bind (traffic will come to this port): " remote_port < /dev/tty
-    read -p "Enter local port to listen on (traffic will be forwarded here): " local_port < /dev/tty
     read -p "Enter SSH username: " username < /dev/tty
     read -p "Enter SSH hostname (e.g., remote server address): " hostname < /dev/tty
     read -p "Enter the full path to your SSH key file: " key_path < /dev/tty
-
+    
     # Validate SSH key file
     if [ ! -f "$key_path" ]; then
-        echo "❌ The specified SSH key file does not exist. Please try again."
+        echo -e "${YELLOW}[WARN]${NC} ❌ The specified SSH key file does not exist. Please try again."
+        echo
         return
     fi
+
+    read -p "Enter remote port to bind (traffic will come to this port): " remote_port < /dev/tty
+    
+    # Check if remote port is in use (now after we have credentials)
+    echo "Checking if port $remote_port is available on remote host..."
+    if ssh -p "$ssh_port" -i "$key_path" "$username@$hostname" "netstat -tuln | grep -q ':$remote_port '"; then
+        echo -e "${YELLOW}[WARN]${NC} ❌ Port $remote_port appears to be in use on the remote host!"
+        read -p "Do you want to continue anyway? [y/N]: " continue_choice < /dev/tty
+        if [[ ! "$continue_choice" =~ ^[Yy]$ ]]; then
+            echo -e "${YELLOW}[WARN]${NC}  ❌ Operation cancelled. Please choose a different port."
+            echo
+            show_menu
+            return
+        fi
+    fi
+
+    read -p "Enter local port to listen on (traffic will be forwarded here): " local_port < /dev/tty
 
     # Construct and run the autossh command
     autossh_command="autossh -M 0 -N \
@@ -42,11 +71,7 @@ create_tunnel() {
 
 # Main menu
 main_menu() {
-    echo "==============================="
-    echo "       Shell Dancer Menu       "
-    echo "==============================="
-    echo "1. Create Tunnel"
-    echo "2. Exit"
+    show_menu
     while true; do
         read -p "Choose an option [1-2]: " choice < /dev/tty
         case "$choice" in
@@ -58,7 +83,9 @@ main_menu() {
                 exit 0
                 ;;
             *)
-                echo "Invalid option. Please choose between 1-2."
+                echo -e "${YELLOW}[WARN]${NC}  ❌ Invalid option. Please choose between 1-2."
+                echo
+                show_menu
                 ;;
         esac
     done
