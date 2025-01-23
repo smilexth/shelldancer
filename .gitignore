@@ -4,3 +4,6 @@ shelldancer.*
 *shelldancer copy*
 *copy of shelldancer*
 !shelldancer
+
+# macOS system files
+.DS_Store
