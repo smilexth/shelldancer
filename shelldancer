@@ -37,13 +37,14 @@ create_tunnel() {
 
     read -p "Enter remote port to bind (traffic will come to this port): " remote_port < /dev/tty
     
-    # Check if remote port is in use (now after we have credentials)
-    echo "Checking if port $remote_port is available on remote host..."
+    # Check if remote port is in use
+    echo "Remote port on $remote_port is available..."
     if ssh -p "$ssh_port" -i "$key_path" "$username@$hostname" "netstat -tuln | grep -q ':$remote_port '"; then
         echo -e "${YELLOW}[WARN]${NC} ❌ Port $remote_port appears to be in use on the remote host!"
+        echo
         read -p "Do you want to continue anyway? [y/N]: " continue_choice < /dev/tty
         if [[ ! "$continue_choice" =~ ^[Yy]$ ]]; then
-            echo -e "${YELLOW}[WARN]${NC}  ❌ Operation cancelled. Please choose a different port."
+            echo -e "${YELLOW}[WARN]${NC} ❌ Operation cancelled. Please choose a different port."
             echo
             show_menu
             return
@@ -63,10 +64,23 @@ create_tunnel() {
     -R 0.0.0.0:$remote_port:localhost:$local_port \
     $username@$hostname"
     
-    echo "⚙️  Command: $autossh_command"
-    eval "$autossh_command"
-
-    echo "✅ Tunnel created successfully."
+    echo
+    # Execute the autossh command in background
+    eval "$autossh_command &"
+    
+    # Wait a moment to ensure tunnel is established
+    sleep 2
+    
+    # Check if autossh process is running
+    if pgrep -f "autossh.*$remote_port" > /dev/null; then
+        echo "✅ Tunnel created successfully."
+        echo
+        exit 0
+    else
+        echo -e "${YELLOW}[WARN]${NC} ❌ Failed to create tunnel"
+        echo
+        return
+    fi
 }
 
 # Main menu
