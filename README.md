@@ -1,10 +1,10 @@
-# Shell Dancer
+# 🕺 Shell Dancer
 
 **Shell Dancer** is an interactive shell tool built using `autossh` to simplify creating port tunnels and reverse shells. It provides an easy-to-use menu-driven interface for Linux users to configure and establish secure SSH tunnels.
 
 ---
 
-## Features
+## ✨ Features
 
 - Create **Port Tunnels** (local to remote forwarding).
 - Create **Reverse Shells** (remote to local forwarding).
@@ -12,7 +12,7 @@
 - Lightweight and dynamic, works on most Linux systems.
 - Installs globally on your system for easy access.
 
-## Prerequisites
+## 📋 Prerequisites
 
 Before using Shell Dancer, ensure the following dependencies are installed on your system:
 
@@ -24,9 +24,9 @@ Before using Shell Dancer, ensure the following dependencies are installed on yo
    brew install autossh      # For macOS
    ```
 
-## Installation
+## 🛠️ Installation
 
-### Option 1: Manual Installation
+### 📝 Option 1: Manual Installation
 
 ```sh
 git clone https://github.com/smilexth/shelldancer.git
@@ -45,7 +45,7 @@ To install Shell Dancer, run the `installer.sh` script from the project director
 ./installer.sh
 ```
 
-### Option 2: Quick Install using `curl`
+### ⚡ Option 2: Quick Install using `curl`
 
 ```sh
 curl -sSL https://raw.githubusercontent.com/smilexth/shelldancer/main/installer.sh | bash
@@ -54,14 +54,14 @@ curl -sSL https://raw.githubusercontent.com/smilexth/shelldancer/main/installer.
 
 Follow the on-screen instructions to create port tunnels and reverse shells.
 
-## After Installation
+## 🚀 After Installation
 
 Once installed, you can run the script from anywhere using:
 ```sh
 shelldancer
 ```
 
-## Usage
+## 📖 Usage
 
 To use Shell Dancer, follow these steps:
 
@@ -86,7 +86,7 @@ To use Shell Dancer, follow these steps:
 
 6. If the tunnel is created successfully, you will see a confirmation message. If it fails, you will be prompted to try again.
 
-## Running autossh as a Service
+## 🔄 Running autossh as a Service
 
 To make `autossh` run as a service and start tunnels automatically using ```systemd``` on Debian/Ubuntu or ```launchd``` on macOS, follow the instructions below:
 
@@ -135,7 +135,7 @@ To make `autossh` run as a service and start tunnels automatically using ```syst
 
 This will ensure that your SSH tunnel starts automatically on system boot and restarts if it fails.
 
-### MacOS Using Brew to make autossh run as a Service
+### 🍏 MacOS Using Brew to make autossh run as a Service
 
 1. Install autossh using brew:
    ```sh
@@ -186,7 +186,7 @@ This will ensure that your SSH tunnel starts automatically on system boot and re
    ```
 ---
 
-## License
+## 📄 License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
