@@ -186,4 +186,7 @@ This will ensure that your SSH tunnel starts automatically on system boot and re
    ```
 ---
 
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
