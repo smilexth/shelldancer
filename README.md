@@ -14,6 +14,29 @@
 - Lightweight and dynamic, works on most Linux systems.
 - Installs globally on your system for easy access.
 
+## 🌐 Why Use SSH Tunneling for Web Services?
+
+SSH tunneling is particularly useful for web services in several scenarios:
+
+1. **Local Development with External Services**
+   - Access a production database locally while developing
+   - Test webhooks on your local development server
+   - Connect local applications to cloud services securely
+
+2. **Bypassing Network Restrictions**
+   - Access internal web services from outside the network
+   - Reach development servers behind firewalls
+   - Connect to staging environments without public IP addresses
+
+3. **Security Benefits**
+   - Encrypt traffic between services
+   - Access services without exposing them to the public internet
+   - Create secure paths through untrusted networks
+
+For example, if you're developing a web application that needs to connect to a database on port 3306, you can use Shell Dancer to create a secure tunnel:
+```
+Local Machine (3306) <-> SSH Tunnel <-> Remote Database (3306)
+```
 
 ## 📋 Prerequisites
 
