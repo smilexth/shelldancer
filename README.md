@@ -2,6 +2,8 @@
 
 **Shell Dancer** is an interactive shell tool built using `autossh` to simplify creating port tunnels and reverse shells. It provides an easy-to-use menu-driven interface for Linux users to configure and establish secure SSH tunnels.
 
+🌐 **Official Website**: [https://dancer.sh](https://dancer.sh)
+
 ---
 
 ## ✨ Features
@@ -11,6 +13,7 @@
 - Simple interactive menu for configuration.
 - Lightweight and dynamic, works on most Linux systems.
 - Installs globally on your system for easy access.
+
 
 ## 📋 Prerequisites
 
@@ -26,7 +29,7 @@ Before using Shell Dancer, ensure the following dependencies are installed on yo
 
 ## 🛠️ Installation
 
-### ⚡ Option 1: Quick Install using `curl`
+### ⚡ Option 1: Official Quick Install using `curl`
 
 ```sh
 curl -fsSL https://dancer.sh/installer.sh | sh
@@ -36,7 +39,7 @@ curl -fsSL https://dancer.sh/installer.sh | sh
 Follow the on-screen instructions to create port tunnels and reverse shells.
 
 
-### 📝 Option 2: Manual Installation
+### 📝 Option 2: Manual Installation from Repository
 
 ```sh
 git clone https://github.com/smilexth/shelldancer.git
