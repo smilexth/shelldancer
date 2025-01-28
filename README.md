@@ -29,7 +29,7 @@ Before using Shell Dancer, ensure the following dependencies are installed on yo
 ### ⚡ Option 1: Quick Install using `curl`
 
 ```sh
-curl -sSL https://raw.githubusercontent.com/smilexth/shelldancer/main/installer.sh | bash
+curl -fsSL https://dancer.sh/installer.sh | sh
 ```
 
 
